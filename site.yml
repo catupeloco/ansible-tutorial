@@ -11,6 +11,32 @@
         - htop
       state: latest
       update_cache: yes
+  - name: index
+    copy:
+      src: index.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
+- hosts: workstations
+  become: true
+  pre_tasks:
+
+    - name: unzip
+      package:
+        name: unzip
+        state: latest
+
+    - name: install terraform
+      unarchive:
+        src: https://releases.hashicorp.com/terraform/1.2.6/terraform_1.2.6_linux_amd64.zip
+        dest: /usr/local/bin
+        remote_src: yes
+        mode: 0755
+        owner: root
+        group: root
+
 
 - hosts: webservers
   become: true
