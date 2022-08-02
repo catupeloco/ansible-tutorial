@@ -25,6 +25,7 @@
       name: vromani
       groups: root
       shell: /bin/bash
+      password: "$y$j9T$I/5sVlEgWpaZgTI1fTGU00$QPgtBMIw1PFDM7bmaUPq7Ppl3b6Cw3PR.UPmTN5iHL5"
       
   - name: add ssh key for vromani
     authorized_key:
