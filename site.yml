@@ -37,6 +37,19 @@
         owner: root
         group: root
 
+    - name: permitir ssh root
+      lineinfile: 
+        path: /etc/ssh/sshd_config
+        regexp: '^#PermitRootLogin'
+        line: PermitRootLogin yes  
+      register: PermitRoot
+
+    - name: reset servicio ssh
+      service:
+        name: sshd
+        state: restarted
+        enabled: yes
+      when: PermitRoot.changed
 
 - hosts: webservers
   become: true
