@@ -13,4 +13,4 @@ fileservers
 dbservers
 
 [all:vars]
-ansible_user=jgalvez
+ansible_user=vromani

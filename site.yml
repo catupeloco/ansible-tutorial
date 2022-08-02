@@ -11,6 +11,7 @@
         - htop
       state: latest
       update_cache: yes
+
   - name: index
     copy:
       src: index.html
@@ -18,6 +19,27 @@
       owner: root
       group: root
       mode: 0644
+
+  - name: usuario vromani
+    user:
+      name: vromani
+      groups: root
+      shell: /bin/bash
+      
+  - name: add ssh key for vromani
+    authorized_key:
+      user: vromani
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMACbCFxJG93dVgBJzxwS4uk5t3VzJIcVuwbIauG1Xz4 bbvauser@nbl645d8685d2ca"
+
+
+  - name: add sudoers file for vromani
+    copy:
+      src: sudoer_vromani
+      dest: /etc/sudoers.d/vromani
+      owner: root
+      group: root
+      mode: 0440
+ 
 
 - hosts: workstations
   become: true
