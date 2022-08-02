@@ -1,3 +1,8 @@
+- name: full upgrade
+  apt:
+    autoremove: yes
+    upgrade: dist
+
 - name: update and htop and vim
   apt:
     name: 
