@@ -1,0 +1,6 @@
+- name: install samba package
+  apt:
+    name:
+      - samba
+      - samba-common
+    state: latest

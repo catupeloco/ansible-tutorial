@@ -1,0 +1,27 @@
+- name: unzip
+  package:
+    name: unzip
+    state: latest
+
+- name: install terraform
+  unarchive:
+    src: https://releases.hashicorp.com/terraform/1.2.6/terraform_1.2.6_linux_amd64.zip
+    dest: /usr/local/bin
+    remote_src: yes
+    mode: 0755
+    owner: root
+    group: root
+
+- name: permitir ssh root
+  lineinfile: 
+    path: /etc/ssh/sshd_config
+    regexp: '^#PermitRootLogin'
+    line: PermitRootLogin yes  
+  register: PermitRoot
+
+- name: reset servicio ssh
+  service:
+    name: sshd
+    state: restarted
+    enabled: yes
+  when: PermitRoot.changed

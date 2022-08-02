@@ -1,0 +1,107 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+  - name: update and htop and vim
+    apt:
+      name: 
+        - vim
+        - htop
+      state: latest
+      update_cache: yes
+
+  - name: index
+    copy:
+      src: index.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644
+
+  - name: usuario vromani
+    user:
+      name: vromani
+      groups: root
+      shell: /bin/bash
+      password: "$y$j9T$I/5sVlEgWpaZgTI1fTGU00$QPgtBMIw1PFDM7bmaUPq7Ppl3b6Cw3PR.UPmTN5iHL5"
+      
+  - name: add ssh key for vromani
+    authorized_key:
+      user: vromani
+      key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMACbCFxJG93dVgBJzxwS4uk5t3VzJIcVuwbIauG1Xz4 bbvauser@nbl645d8685d2ca"
+
+
+  - name: add sudoers file for vromani
+    copy:
+      src: sudoer_vromani
+      dest: /etc/sudoers.d/vromani
+      owner: root
+      group: root
+      mode: 0440
+ 
+
+- hosts: workstations
+  become: true
+  pre_tasks:
+
+    - name: unzip
+      package:
+        name: unzip
+        state: latest
+
+    - name: install terraform
+      unarchive:
+        src: https://releases.hashicorp.com/terraform/1.2.6/terraform_1.2.6_linux_amd64.zip
+        dest: /usr/local/bin
+        remote_src: yes
+        mode: 0755
+        owner: root
+        group: root
+
+    - name: permitir ssh root
+      lineinfile: 
+        path: /etc/ssh/sshd_config
+        regexp: '^#PermitRootLogin'
+        line: PermitRootLogin yes  
+      register: PermitRoot
+
+    - name: reset servicio ssh
+      service:
+        name: sshd
+        state: restarted
+        enabled: yes
+      when: PermitRoot.changed
+
+- hosts: webservers
+  become: true
+  tasks:
+
+  - name: install apache2 package
+    apt:
+      name: 
+        - apache2
+        - libapache2-mod-php
+      state: latest
+
+- hosts: fileservers
+  become: true
+  tasks:
+
+  - name: install samba package
+    apt:
+      name:
+        - samba
+        - samba-common
+      state: latest
+
+- hosts: dbservers
+  become: true
+  tasks:
+
+  - name: install mariadb
+    apt:
+      name:
+        - mariadb-server
+      state: latest
